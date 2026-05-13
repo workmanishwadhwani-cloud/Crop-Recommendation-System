@@ -1,42 +1,168 @@
-# Crop Recommendation System Using Machine Learning
-# Description
-The Crop Recommendation System is a machine learning-based application that provides recommendations for suitable crops based on various environmental and soil conditions. It aims to assist farmers and agricultural professionals in making informed decisions about crop selection, optimizing yields, and maximizing profitability.
+# 🌿 CropAI — Crop Recommendation System Using Machine Learning
 
-The system takes into account several factors such as soil type, climate, rainfall, temperature, humidity, and pH levels to determine the most suitable crops for a given region. By analyzing historical data and using predictive models, the system provides personalized recommendations tailored to the specific conditions of a farm or agricultural area.
+An AI-powered web application that recommends the most suitable crops for cultivation based on soil nutrients and climate conditions. Built with Flask and Scikit-learn, with a modern glassmorphism UI.
 
-# Key Features
-Input Data Collection: The system allows users to input relevant data such as soil parameters, climate information, and geographic location.
-Data Preprocessing: The input data is preprocessed to handle missing values, normalize or scale features, and transform categorical variables.
-Machine Learning Models: Various machine learning algorithms are employed, including decision trees, random forests, support vector machines (SVM), and gradient boosting techniques, to build predictive models.
-Model Training and Evaluation: The models are trained on historical data and evaluated using appropriate performance metrics to ensure accuracy and reliability.
-Crop Recommendation: Based on the trained models, the system recommends the most suitable crops for the given input parameters.
-User-Friendly Interface: The system provides a user-friendly interface where users can easily input their data, view recommendations, and explore additional information.
+---
 
-# Technologies Used
-Python: Programming language used for model development, data preprocessing, and web application development.
-Scikit-learn: Machine learning library used for model training, evaluation, and prediction.
-Pandas: Data manipulation library used for data preprocessing and analysis.
-NumPy: Library for numerical computing used for handling arrays and mathematical operations.
-Flask: Web framework used for building the user interface and handling HTTP requests.
-HTML/CSS: Markup and styling languages used for designing the web interface.
-JavaScript: Scripting language used for client-side interactions and enhancing the user interface.
-# Installation and Usage
-Clone the repository: git clone https://github.com/your-username/crop-recommendation-system.git
-Install the required dependencies: pip install -r requirements.txt
-Run the application: python app.py
-Access the application through the web browser at http://localhost:5000
-# Future Enhancements
-Integration of real-time weather data to improve the accuracy of recommendations.
-Incorporation of crop market prices and profitability analysis to assist farmers in making economically viable decisions.
-Development of a mobile application for convenient access and usage on smartphones and tablets.
-Integration of user feedback and data collection to continuously enhance the recommendation system's performance.
-Contributing
-Contributions to the project are welcome. If you have any suggestions, bug reports, or feature requests, please submit them through the issue tracker on the GitHub repository.
+## 🚀 Features
 
+- **Top-3 Crop Recommendations** — Returns the best 3 matching crops ranked by ML model confidence score
+- **Crop Details** — Each recommendation includes growing season, water requirements, and a farming tip
+- **Prediction History** — All predictions are saved to a local SQLite database and shown in a history table
+- **Input Validation** — Graceful error handling for invalid or missing inputs
+- **Modern UI** — Dark green glassmorphism design, animated background, fully responsive (mobile/tablet/desktop)
+- **AJAX Predictions** — No page reload; results appear instantly via `fetch()` API
+- **Print Support** — Clean print stylesheet to export your recommendation
+- **REST API** — `/predict` and `/api/history` JSON endpoints for easy integration
 
+---
 
-# Acknowledgements
-We would like to express our gratitude to the agricultural research community, farmers, and organizations for providing valuable insights, data, and domain knowledge that contributed to the development of this Crop Recommendation System.
+## 🧠 How It Works
 
-# Contact
-For any inquiries or questions, please contact us at 611noorsaeed@gmail.com
+The system takes 7 input parameters:
+
+| Parameter | Unit | Description |
+|---|---|---|
+| Nitrogen (N) | mg/kg | Nitrogen content in soil |
+| Phosphorus (P) | mg/kg | Phosphorus content in soil |
+| Potassium (K) | mg/kg | Potassium content in soil |
+| Temperature | °C | Average ambient temperature |
+| Humidity | % | Relative humidity |
+| pH | — | Soil pH level (0–14) |
+| Rainfall | mm | Annual rainfall |
+
+These features are scaled using **MinMaxScaler** + **StandardScaler**, then passed to a trained **Random Forest** classifier that predicts from **22 possible crops**.
+
+---
+
+## 🗂️ Project Structure
+
+```
+Crop-Recommendation-System/
+├── app.py                  # Flask backend (API endpoints, model inference, SQLite)
+├── model.pkl               # Trained ML model (Random Forest)
+├── standscaler.pkl         # StandardScaler fitted on training data
+├── minmaxscaler.pkl        # MinMaxScaler fitted on training data
+├── Crop_recommendation.csv # Original dataset
+├── requirements.txt        # Python dependencies
+├── history.db              # SQLite database (auto-created on first run)
+│
+├── templates/
+│   └── index.html          # Main UI (Jinja2 template)
+│
+├── static/
+│   ├── style.css           # Dark green glassmorphism stylesheet
+│   ├── script.js           # AJAX form, result rendering, history loading
+│   └── img.jpg             # Crop field image asset
+│
+└── Crop Classification With Recommendation System.ipynb  # Training notebook
+```
+
+---
+
+## 🛠️ Technologies Used
+
+| Layer | Technology |
+|---|---|
+| **Backend** | Python, Flask |
+| **ML** | Scikit-learn (Random Forest), NumPy, Pandas |
+| **Database** | SQLite (via Python `sqlite3`) |
+| **Frontend** | HTML5, Vanilla CSS (Glassmorphism), JavaScript (ES6+) |
+| **Fonts** | Google Fonts — Inter |
+
+---
+
+## ⚙️ Installation & Usage
+
+### 1. Clone the repository
+```bash
+git clone https://github.com/611noorsaeed/Crop-Recommendation-System-Using-Machine-Learning.git
+cd Crop-Recommendation-System-Using-Machine-Learning
+```
+
+### 2. Create & activate a virtual environment
+```bash
+python -m venv .venv
+
+# Windows
+.\.venv\Scripts\activate
+
+# macOS / Linux
+source .venv/bin/activate
+```
+
+### 3. Install dependencies
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Run the application
+```bash
+python app.py
+```
+
+### 5. Open in browser
+```
+http://127.0.0.1:5000
+```
+
+---
+
+## 📡 API Reference
+
+### `POST /predict`
+Accepts JSON body and returns top-3 crop recommendations.
+
+**Request:**
+```json
+{
+  "Nitrogen": 90,
+  "Phosporus": 42,
+  "Potassium": 43,
+  "Temperature": 25.5,
+  "Humidity": 80.0,
+  "Ph": 6.5,
+  "Rainfall": 202.0
+}
+```
+
+**Response:**
+```json
+{
+  "recommendations": [
+    {
+      "name": "Rice",
+      "confidence": 94.2,
+      "emoji": "🌾",
+      "season": "Kharif (Jun–Nov)",
+      "water": "High",
+      "tip": "Thrives in flooded fields with high humidity."
+    }
+  ]
+}
+```
+
+### `GET /api/history`
+Returns the last 10 predictions from the SQLite database.
+
+---
+
+## 🌾 Supported Crops (22)
+
+Rice, Maize, Jute, Cotton, Coconut, Papaya, Orange, Apple, Muskmelon, Watermelon, Grapes, Mango, Banana, Pomegranate, Lentil, Blackgram, Mungbean, Mothbeans, Pigeonpeas, Kidneybeans, Chickpea, Coffee
+
+---
+
+## 🔮 Future Enhancements
+
+- 🌦️ Auto-fetch live weather data via OpenWeatherMap API (temperature, humidity, rainfall by location)
+- 📱 Mobile app using React Native or Flutter
+- 📊 Crop market price integration for profitability analysis
+- 🗺️ Location-based region mapping for automated soil data lookup
+- 🔐 User authentication and personal prediction dashboard
+
+---
+
+## 📄 License
+
+This project is open-source and available for educational and research purposes.
