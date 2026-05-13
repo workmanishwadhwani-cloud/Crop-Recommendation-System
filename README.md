@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 🌿 CropAI — Crop Recommendation System Using Machine Learning
 
 An AI-powered web application that recommends the most suitable crops for cultivation based on soil nutrients and climate conditions. Built with Flask and Scikit-learn, with a modern glassmorphism UI.
@@ -166,3 +167,6 @@ Rice, Maize, Jute, Cotton, Coconut, Papaya, Orange, Apple, Muskmelon, Watermelon
 ## 📄 License
 
 This project is open-source and available for educational and research purposes.
+=======
+# Crop-Recommendation-System
+>>>>>>> de1d85dbb48aec193134a46cea8527d3c185068c
